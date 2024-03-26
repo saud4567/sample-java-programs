@@ -1,0 +1,24 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11
+
+    working_directory: ~/my-java-app
+
+    steps:
+      - checkout
+
+      # Install Maven
+      - run: sudo apt-get install -y maven
+
+      # Build the Java application
+      - run: mvn clean install
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+
