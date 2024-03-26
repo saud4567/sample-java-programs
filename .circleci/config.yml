@@ -10,25 +10,22 @@ jobs:
     steps:
       - checkout
 
-      # Update and upgrade packages
+      # Install necessary packages
       - run:
-          name: Update and upgrade packages
-          command: sudo apt-get update && sudo apt-get upgrade -y
-
-      # Fix broken packages
-      - run:
-          name: Fix broken packages
-          command: sudo apt-get install -f
-
-      # Install OpenJDK and Maven
-      - run:
-          name: Install OpenJDK and Maven
+          name: Install Java and Maven
           command: |
-            sudo apt-get install -y openjdk-11-jdk-headless
-            wget -O apache-maven-3.8.4-bin.tar.gz https://downloads.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
-            tar xzf apache-maven-3.8.4-bin.tar.gz
-            export M2_HOME=$PWD/apache-maven-3.8.4
-            export PATH=$M2_HOME/bin:$PATH
+            sudo apt-get update
+            sudo apt-get install -y openjdk-11-jdk-headless maven
+
+      # Verify Java installation
+      - run:
+          name: Verify Java Installation
+          command: java -version
+
+      # Verify Maven installation
+      - run:
+          name: Verify Maven Installation
+          command: mvn -version
 
       # Build the Java application
       - run: mvn clean install
