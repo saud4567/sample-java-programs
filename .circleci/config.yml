@@ -10,8 +10,16 @@ jobs:
     steps:
       - checkout
 
-      # Install Maven
-      - run: sudo apt-get install -y maven
+      # Install Maven manually
+      - run:
+          name: Install Maven
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y openjdk-11-jdk-headless
+            wget -O apache-maven-3.8.4-bin.tar.gz https://downloads.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
+            tar xzf apache-maven-3.8.4-bin.tar.gz
+            export M2_HOME=$PWD/apache-maven-3.8.4
+            export PATH=$M2_HOME/bin:$PATH
 
       # Build the Java application
       - run: mvn clean install
