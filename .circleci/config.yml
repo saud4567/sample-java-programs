@@ -13,11 +13,12 @@ jobs:
             docker build \
               --tag my-image:latest \
               --build-arg JAR_FILE=target/my-app.jar \
+              -f Dockerfile \
               .
       - run:
           name: Login to Docker Registry
           command: |
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            echo "$saud@4545" | docker login -u "$saud4545" --password-stdin
       - run:
           name: Push Docker Image
           command: |
