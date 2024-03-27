@@ -42,8 +42,9 @@ jobs:
           command: |
             aws configure set aws_access_key_id $ACCESSKEY
             aws configure set aws_secret_access_key $SECRETEKEY
-            aws s3 sync target/class/ s3://my-test-1-bucket/ --delete
-            echo "Build artifact uploaded to S3"
+            aws s3 sync target/ s3://my-test-1-bucket/ --delete
+             echo "Build artifact uploaded to S3"
+
 
 workflows:
   version: 2
