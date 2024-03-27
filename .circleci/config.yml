@@ -1,26 +1,52 @@
 version: 2.1
+
 jobs:
   build:
-    working_directory: ~/project
     docker:
-      - image: circleci/openjdk:11-jdk-buster
+      - image: circleci/openjdk:11
+
+    working_directory: ~/my-java-app
+
     steps:
       - checkout
+
+      # Install necessary packages
+      - run:
+          name: Install Java and Maven
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y openjdk-11-jdk-headless maven
+
+      # Verify Java installation
+      - run:
+          name: Verify Java Installation
+          command: java -version
+
+      # Verify Maven installation
+      - run:
+          name: Verify Maven Installation
+          command: mvn -version
+
+      # Install AWS CLI
+      - run:
+          name: Install AWS CLI
+          command: |
+            sudo apt-get install -y awscli
+
+      # Build the Java application
       - run: mvn clean install
+
+      # Upload build artifact to S3
       - run:
-          name: Build Docker Image
+          name: Upload Build Artifact to S3
           command: |
-            docker build \
-              --tag my-image:latest \
-              --build-arg JAR_FILE=target/my-app.jar \
-              -f Dockerfile \
-              .
-      - run:
-          name: Login to Docker Registry
-          command: |
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - run:
-          name: Push Docker Image
-          command: |
-            docker tag my-image:latest my-registry/my-image:latest
-            docker push my-registry/my-image:latest
+            aws configure set aws_access_key_id $ACCESSKEY
+            aws configure set aws_secret_access_key $SECRETEKEY
+            aws s3 sync target/ s3://my-test-1-bucket/ --delete
+            echo "Build artifact uploaded to S3"
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
